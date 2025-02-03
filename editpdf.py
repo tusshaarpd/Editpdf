@@ -15,9 +15,14 @@ def create_pdf(text, output_path):
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     pdf.set_font("Arial", size=12)
+    
     for line in text.split("\n"):
-        pdf.cell(200, 10, txt=line, ln=True, align='L')
-    pdf.output(output_path)
+        try:
+            pdf.cell(200, 10, txt=line.encode("latin-1", "replace").decode("latin-1"), ln=True, align='L')
+        except UnicodeEncodeError:
+            pdf.cell(200, 10, txt="(Unicode Error: Unable to display)", ln=True, align='L')
+    
+    pdf.output(output_path, "F")
 
 def main():
     st.title("Editable PDF Application")
